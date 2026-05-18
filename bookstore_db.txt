@@ -1,0 +1,452 @@
+mysql> CREATE DATABASE IF NOT EXISTS bookstore_db;
+Query OK, 1 row affected (0.11 sec)
+
+mysql> 
+mysql> USE bookstore_db;
+Database changed
+mysql> 
+mysql> -- 1. Authors
+mysql> CREATE TABLE Authors (
+    ->     author_id INT AUTO_INCREMENT PRIMARY KEY,
+    ->     author_name VARCHAR(100) NOT NULL,
+    ->     bio TEXT
+    -> );
+Query OK, 0 rows affected (0.13 sec)
+
+mysql> 
+mysql> -- 2. Genres
+mysql> CREATE TABLE Genres (
+    ->     genre_id INT AUTO_INCREMENT PRIMARY KEY,
+    ->     genre_name VARCHAR(50) NOT NULL
+    -> );
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> 
+mysql> -- 3. Customers
+mysql> CREATE TABLE Customers (
+    ->     customer_id INT AUTO_INCREMENT PRIMARY KEY,
+    ->     name VARCHAR(100),
+    ->     email VARCHAR(100) UNIQUE,
+    ->     city VARCHAR(50),
+    ->     join_date DATE
+    -> );
+Query OK, 0 rows affected (0.08 sec)
+
+mysql> 
+mysql> -- 4. Books
+mysql> CREATE TABLE Books (
+    ->     book_id INT AUTO_INCREMENT PRIMARY KEY,
+    ->     title VARCHAR(150),
+    ->     price DECIMAL(10,2),
+    ->     stock_quantity INT,
+    ->     author_id INT,
+    ->     genre_id INT,
+    ->     
+    ->     FOREIGN KEY (author_id) REFERENCES Authors(author_id),
+    ->     FOREIGN KEY (genre_id) REFERENCES Genres(genre_id)
+    -> );
+Query OK, 0 rows affected (0.14 sec)
+
+mysql> 
+mysql> -- 5. Orders
+mysql> CREATE TABLE Orders (
+    ->     order_id INT AUTO_INCREMENT PRIMARY KEY,
+    ->     order_date DATE,
+    ->     customer_id INT,
+    ->     
+    ->     FOREIGN KEY (customer_id) REFERENCES Customers(customer_id)
+    -> );
+Query OK, 0 rows affected (0.11 sec)
+
+mysql> 
+mysql> -- 6. Order_Details
+mysql> CREATE TABLE Order_Details (
+    ->     detail_id INT AUTO_INCREMENT PRIMARY KEY,
+    ->     order_id INT,
+    ->     book_id INT,
+    ->     quantity_ordered INT,
+    ->     price_at_time_of_order DECIMAL(10,2),
+    ->     
+    ->     FOREIGN KEY (order_id) REFERENCES Orders(order_id),
+    ->     FOREIGN KEY (book_id) REFERENCES Books(book_id)
+    -> );
+Query OK, 0 rows affected (0.14 sec)
+
+mysql> 
+mysql> -- Insert Authors (4 Existing + 4 New = 8 Values)
+mysql> INSERT INTO Authors (author_name, bio) VALUES
+    -> ('Chetan Bhagat', 'Indian author known for 5 Point Someone.'),
+    -> ('Arundhati Roy', 'Winner of the Man Booker Prize.'),
+    -> ('R.K. Narayan', 'Creator of Malgudi Days.'),
+    -> ('Amish Tripathi', 'Known for the Shiva Trilogy.'),
+    -> ('Shashi Tharoor', 'Indian author and former diplomat.'),
+    -> ('Devdutt Pattanaik', 'Writer known for mythology books.'),
+    -> ('Anuja Chauhan', 'Popular Indian fiction novelist.'),
+    -> ('Vikram Seth', 'Famous Indian poet and novelist.');
+Query OK, 8 rows affected (0.02 sec)
+Records: 8  Duplicates: 0  Warnings: 0
+
+mysql> 
+mysql> -- Insert Genres (4 Existing + 4 New = 8 Values)
+mysql> INSERT INTO Genres (genre_name) VALUES
+    -> ('Fiction'),
+    -> ('Mythology'),
+    -> ('History'),
+    -> ('Romance'),
+    -> ('Comedy'),
+    -> ('Drama'),
+    -> ('Poetry'),
+    -> ('Crime');
+Query OK, 8 rows affected (0.01 sec)
+Records: 8  Duplicates: 0  Warnings: 0
+
+mysql> 
+mysql> -- Insert Books (4 Existing + 4 New = 8 Values)
+mysql> INSERT INTO Books
+    -> (title, price, stock_quantity, author_id, genre_id)
+    -> VALUES
+    -> ('Five Point Someone', 250.00, 50, 1, 1),
+    -> ('2 States', 300.00, 40, 1, 4),
+    -> ('The God of Small Things', 450.00, 20, 2, 1),
+    -> ('Malgudi Days', 200.00, 100, 3, 1),
+    -> ('Why I Am A Hindu', 520.00, 28, 5, 3),
+    -> ('Jaya', 340.00, 33, 6, 2),
+    -> ('The Great Indian Love Story', 310.00, 42, 7, 4),
+    -> ('A Suitable Boy', 490.00, 26, 8, 6);
+Query OK, 8 rows affected (0.02 sec)
+Records: 8  Duplicates: 0  Warnings: 0
+
+mysql> 
+mysql> -- Insert Customers (4 Existing + 4 New = 8 Values)
+mysql> INSERT INTO Customers
+    -> (name, email, city, join_date)
+    -> VALUES
+    -> ('Aarav Sharma', 'aarav@gmail.com', 'Mumbai', '2023-01-10'),
+    -> ('Diya Patel', 'diya.p@yahoo.com', 'Ahmedabad', '2023-02-15'),
+    -> ('Vihaan Reddy', 'vihaan.r@outlook.com', 'Hyderabad', '2023-03-20'),
+    -> ('Ananya Gupta', 'ananya.g@gmail.com', 'Delhi', '2023-04-05'),
+    -> ('Pooja Singh', 'pooja.s@gmail.com', 'Bhopal', '2023-05-19'),
+    -> ('Arjun Malhotra', 'arjun.m@yahoo.com', 'Noida', '2023-06-22'),
+    -> ('Nisha Rao', 'nisha.r@outlook.com', 'Mysore', '2023-07-13'),
+    -> ('Ritika Das', 'ritika.d@gmail.com', 'Patna', '2023-08-17');
+Query OK, 8 rows affected (0.01 sec)
+Records: 8  Duplicates: 0  Warnings: 0
+
+mysql> 
+mysql> -- Insert Orders (4 Existing + 4 New = 8 Values)
+mysql> INSERT INTO Orders
+    -> (order_date, customer_id)
+    -> VALUES
+    -> ('2023-05-01', 1),
+    -> ('2021-10-23', 2),
+    -> ('2023-08-05', 1),
+    -> ('2018-06-01', 3),
+    -> ('2022-09-20', 5),
+    -> ('2023-07-06', 6),
+    -> ('2026-07-25', 7),
+    -> ('2023-08-14', 8);
+Query OK, 8 rows affected (0.02 sec)
+Records: 8  Duplicates: 0  Warnings: 0
+
+mysql> 
+mysql> -- Insert Order_Details (4 Existing + 4 New = 8 Values)
+mysql> INSERT INTO Order_Details
+    -> (order_id, book_id, quantity_ordered, price_at_time_of_order)
+    -> VALUES
+    -> (1, 1, 1, 250.00),
+    -> (1, 4, 2, 200.00),
+    -> (2, 2, 1, 300.00),
+    -> (3, 3, 1, 450.00),
+    -> (5, 5, 1, 520.00),
+    -> (6, 6, 2, 340.00),
+    -> (7, 7, 1, 310.00),
+    -> (8, 8, 1, 490.00);
+Query OK, 8 rows affected (0.02 sec)
+Records: 8  Duplicates: 0  Warnings: 0
+
+mysql> 
+mysql> -- Verify Data
+mysql> SELECT * FROM Authors;
++-----------+-------------------+------------------------------------------+
+| author_id | author_name       | bio                                      |
++-----------+-------------------+------------------------------------------+
+|         1 | Chetan Bhagat     | Indian author known for 5 Point Someone. |
+|         2 | Arundhati Roy     | Winner of the Man Booker Prize.          |
+|         3 | R.K. Narayan      | Creator of Malgudi Days.                 |
+|         4 | Amish Tripathi    | Known for the Shiva Trilogy.             |
+|         5 | Shashi Tharoor    | Indian author and former diplomat.       |
+|         6 | Devdutt Pattanaik | Writer known for mythology books.        |
+|         7 | Anuja Chauhan     | Popular Indian fiction novelist.         |
+|         8 | Vikram Seth       | Famous Indian poet and novelist.         |
++-----------+-------------------+------------------------------------------+
+8 rows in set (0.00 sec)
+
+mysql> SELECT * FROM Genres;
++----------+------------+
+| genre_id | genre_name |
++----------+------------+
+|        1 | Fiction    |
+|        2 | Mythology  |
+|        3 | History    |
+|        4 | Romance    |
+|        5 | Comedy     |
+|        6 | Drama      |
+|        7 | Poetry     |
+|        8 | Crime      |
++----------+------------+
+8 rows in set (0.00 sec)
+
+mysql> SELECT * FROM Customers;
++-------------+----------------+----------------------+-----------+------------+
+| customer_id | name           | email                | city      | join_date  |
++-------------+----------------+----------------------+-----------+------------+
+|           1 | Aarav Sharma   | aarav@gmail.com      | Mumbai    | 2023-01-10 |
+|           2 | Diya Patel     | diya.p@yahoo.com     | Ahmedabad | 2023-02-15 |
+|           3 | Vihaan Reddy   | vihaan.r@outlook.com | Hyderabad | 2023-03-20 |
+|           4 | Ananya Gupta   | ananya.g@gmail.com   | Delhi     | 2023-04-05 |
+|           5 | Pooja Singh    | pooja.s@gmail.com    | Bhopal    | 2023-05-19 |
+|           6 | Arjun Malhotra | arjun.m@yahoo.com    | Noida     | 2023-06-22 |
+|           7 | Nisha Rao      | nisha.r@outlook.com  | Mysore    | 2023-07-13 |
+|           8 | Ritika Das     | ritika.d@gmail.com   | Patna     | 2023-08-17 |
++-------------+----------------+----------------------+-----------+------------+
+8 rows in set (0.00 sec)
+
+mysql> SELECT * FROM Books;
++---------+-----------------------------+--------+----------------+-----------+----------+
+| book_id | title                       | price  | stock_quantity | author_id | genre_id |
++---------+-----------------------------+--------+----------------+-----------+----------+
+|       1 | Five Point Someone          | 250.00 |             50 |         1 |        1 |
+|       2 | 2 States                    | 300.00 |             40 |         1 |        4 |
+|       3 | The God of Small Things     | 450.00 |             20 |         2 |        1 |
+|       4 | Malgudi Days                | 200.00 |            100 |         3 |        1 |
+|       5 | Why I Am A Hindu            | 520.00 |             28 |         5 |        3 |
+|       6 | Jaya                        | 340.00 |             33 |         6 |        2 |
+|       7 | The Great Indian Love Story | 310.00 |             42 |         7 |        4 |
+|       8 | A Suitable Boy              | 490.00 |             26 |         8 |        6 |
++---------+-----------------------------+--------+----------------+-----------+----------+
+8 rows in set (0.00 sec)
+
+mysql> SELECT * FROM Orders;
++----------+------------+-------------+
+| order_id | order_date | customer_id |
++----------+------------+-------------+
+|        1 | 2023-05-01 |           1 |
+|        2 | 2021-10-23 |           2 |
+|        3 | 2023-08-05 |           1 |
+|        4 | 2018-06-01 |           3 |
+|        5 | 2022-09-20 |           5 |
+|        6 | 2023-07-06 |           6 |
+|        7 | 2026-07-25 |           7 |
+|        8 | 2023-08-14 |           8 |
++----------+------------+-------------+
+8 rows in set (0.00 sec)
+
+mysql> SELECT * FROM Order_Details;
++-----------+----------+---------+------------------+------------------------+
+| detail_id | order_id | book_id | quantity_ordered | price_at_time_of_order |
++-----------+----------+---------+------------------+------------------------+
+|         1 |        1 |       1 |                1 |                 250.00 |
+|         2 |        1 |       4 |                2 |                 200.00 |
+|         3 |        2 |       2 |                1 |                 300.00 |
+|         4 |        3 |       3 |                1 |                 450.00 |
+|         5 |        5 |       5 |                1 |                 520.00 |
+|         6 |        6 |       6 |                2 |                 340.00 |
+|         7 |        7 |       7 |                1 |                 310.00 |
+|         8 |        8 |       8 |                1 |                 490.00 |
++-----------+----------+---------+------------------+------------------------+
+8 rows in set (0.00 sec)
+
+mysql> 
+mysql> -- 1.Display author IDs after adding 100 to each ID
+mysql> SELECT author_name,author_id + 100 AS updated_id
+    -> FROM Authors;
++-------------------+------------+
+| author_name       | updated_id |
++-------------------+------------+
+| Chetan Bhagat     |        101 |
+| Arundhati Roy     |        102 |
+| R.K. Narayan      |        103 |
+| Amish Tripathi    |        104 |
+| Shashi Tharoor    |        105 |
+| Devdutt Pattanaik |        106 |
+| Anuja Chauhan     |        107 |
+| Vikram Seth       |        108 |
++-------------------+------------+
+8 rows in set (0.00 sec)
+
+mysql> 
+mysql> -- 2.Display orders placed after 2022-01-01
+mysql> SELECT * FROM Orders
+    -> WHERE order_date > '2022-01-01';
++----------+------------+-------------+
+| order_id | order_date | customer_id |
++----------+------------+-------------+
+|        1 | 2023-05-01 |           1 |
+|        3 | 2023-08-05 |           1 |
+|        5 | 2022-09-20 |           5 |
+|        6 | 2023-07-06 |           6 |
+|        7 | 2026-07-25 |           7 |
+|        8 | 2023-08-14 |           8 |
++----------+------------+-------------+
+6 rows in set (0.00 sec)
+
+mysql> 
+mysql> -- 3.Display order IDs increased by 50
+mysql> SELECT order_id,order_id + 50 AS new_order_id
+    -> FROM Orders;
++----------+--------------+
+| order_id | new_order_id |
++----------+--------------+
+|        1 |           51 |
+|        3 |           53 |
+|        2 |           52 |
+|        4 |           54 |
+|        5 |           55 |
+|        6 |           56 |
+|        7 |           57 |
+|        8 |           58 |
++----------+--------------+
+8 rows in set (0.00 sec)
+
+mysql> 
+mysql> -- 4.Display order details where quantity ordered is greater than 1
+mysql> SELECT * FROM Order_Details
+    -> WHERE quantity_ordered > 1;
++-----------+----------+---------+------------------+------------------------+
+| detail_id | order_id | book_id | quantity_ordered | price_at_time_of_order |
++-----------+----------+---------+------------------+------------------------+
+|         2 |        1 |       4 |                2 |                 200.00 |
+|         6 |        6 |       6 |                2 |                 340.00 |
++-----------+----------+---------+------------------+------------------------+
+2 rows in set (0.00 sec)
+
+mysql> 
+mysql> -- 5.Find earliest and latest join dates.
+mysql> SELECT MIN(join_date) AS earliest_join,
+    -> MAX(join_date) AS latest_join
+    -> FROM Customers;
++---------------+-------------+
+| earliest_join | latest_join |
++---------------+-------------+
+| 2023-01-10    | 2023-08-17  |
++---------------+-------------+
+1 row in set (0.00 sec)
+
+mysql> 
+mysql> -- 6.Count customers city-wise.
+mysql> SELECT city,COUNT(*) AS total_customers
+    -> FROM Customers
+    -> GROUP BY city;
++-----------+-----------------+
+| city      | total_customers |
++-----------+-----------------+
+| Mumbai    |               1 |
+| Ahmedabad |               1 |
+| Hyderabad |               1 |
+| Delhi     |               1 |
+| Bhopal    |               1 |
+| Noida     |               1 |
+| Mysore    |               1 |
+| Patna     |               1 |
++-----------+-----------------+
+8 rows in set (0.00 sec)
+
+mysql> 
+mysql> -- 7.Find average stock quantity by author.
+mysql> SELECT author_id,AVG(stock_quantity) AS avg_stock
+    -> FROM Books
+    -> GROUP BY author_id;
++-----------+-----------+
+| author_id | avg_stock |
++-----------+-----------+
+|         1 |   45.0000 |
+|         2 |   20.0000 |
+|         3 |  100.0000 |
+|         5 |   28.0000 |
+|         6 |   33.0000 |
+|         7 |   42.0000 |
+|         8 |   26.0000 |
++-----------+-----------+
+7 rows in set (0.00 sec)
+
+mysql> 
+mysql> -- 8.Find customers who placed more than one order.
+mysql> SELECT customer_id,COUNT(*) AS total_orders
+    -> FROM Orders
+    -> GROUP BY customer_id
+    -> HAVING COUNT(*) > 1;
++-------------+--------------+
+| customer_id | total_orders |
++-------------+--------------+
+|           1 |            2 |
++-------------+--------------+
+1 row in set (0.00 sec)
+
+mysql> 
+mysql> -- 9.Display authors along with the books written by them.
+mysql> SELECT a.author_name, b.title, b.price
+    -> FROM Authors a
+    -> JOIN Books b
+    -> ON a.author_id = b.author_id;
++-------------------+-----------------------------+--------+
+| author_name       | title                       | price  |
++-------------------+-----------------------------+--------+
+| Chetan Bhagat     | Five Point Someone          | 250.00 |
+| Chetan Bhagat     | 2 States                    | 300.00 |
+| Arundhati Roy     | The God of Small Things     | 450.00 |
+| R.K. Narayan      | Malgudi Days                | 200.00 |
+| Shashi Tharoor    | Why I Am A Hindu            | 520.00 |
+| Devdutt Pattanaik | Jaya                        | 340.00 |
+| Anuja Chauhan     | The Great Indian Love Story | 310.00 |
+| Vikram Seth       | A Suitable Boy              | 490.00 |
++-------------------+-----------------------------+--------+
+8 rows in set (0.00 sec)
+
+mysql> 
+mysql> -- 10.Find authors who have written books costing more than average price.
+mysql> SELECT *
+    -> FROM Authors
+    -> WHERE author_id IN (SELECT author_id FROM Books
+    -> WHERE price > (SELECT AVG(price)FROM Books));
++-----------+----------------+------------------------------------+
+| author_id | author_name    | bio                                |
++-----------+----------------+------------------------------------+
+|         2 | Arundhati Roy  | Winner of the Man Booker Prize.    |
+|         5 | Shashi Tharoor | Indian author and former diplomat. |
+|         8 | Vikram Seth    | Famous Indian poet and novelist.   |
++-----------+----------------+------------------------------------+
+3 rows in set (0.00 sec)
+
+mysql> 
+mysql> -- 11.Display genres with their corresponding book titles.
+mysql> SELECT g.genre_name, b.title
+    -> FROM Genres g
+    -> JOIN Books b ON g.genre_id = b.genre_id;
++------------+-----------------------------+
+| genre_name | title                       |
++------------+-----------------------------+
+| Fiction    | Five Point Someone          |
+| Romance    | 2 States                    |
+| Fiction    | The God of Small Things     |
+| Fiction    | Malgudi Days                |
+| History    | Why I Am A Hindu            |
+| Mythology  | Jaya                        |
+| Romance    | The Great Indian Love Story |
+| Drama      | A Suitable Boy              |
++------------+-----------------------------+
+8 rows in set (0.00 sec)
+
+mysql> 
+mysql> -- 12.Display customers who placed the latest order.
+mysql> SELECT c.name, o.order_date
+    -> FROM Customers c
+    -> JOIN Orders o ON c.customer_id = o.customer_id
+    -> WHERE o.order_date = (SELECT MAX(order_date) FROM Orders);
++-----------+------------+
+| name      | order_date |
++-----------+------------+
+| Nisha Rao | 2026-07-25 |
++-----------+------------+
+1 row in set (0.00 sec)
+
+mysql> Terminal close -- exit!
